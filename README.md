@@ -2,6 +2,9 @@
 
 Tes NexMedis Node.js
 
+Link soal:
+https://docs.google.com/document/d/1jeS6oRazYuaM-miNODN20Aagsia-i0c9/edit?tab=t.0
+
 ## 1 & 2. Query SQL
 
 ---
