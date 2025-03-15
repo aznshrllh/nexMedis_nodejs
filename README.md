@@ -5,13 +5,50 @@ Tes NexMedis Node.js
 Link soal:
 https://docs.google.com/document/d/1jeS6oRazYuaM-miNODN20Aagsia-i0c9/edit?tab=t.0
 
-## 1 & 2. Query SQL
+## 1. SQL Query - Data Mahasiswa
 
----
+Berikut adalah query untuk menampilkan data mahasiswa beserta nilai tertinggi, terendah, rata-rata, jumlah mata kuliah, dan mata kuliah dengan nilai tertinggi:
+
+```sql
+SELECT
+    m.nim,
+    m.nama,
+    MAX(n.nilai_angka) AS nilai_tertinggi,
+    MIN(n.nilai_angka) AS nilai_terendah,
+    ROUND(AVG(n.nilai_angka), 2) AS nilai_rata_rata,
+    COUNT(n.kode_mk) AS jumlah_mata_kuliah,
+    (
+        SELECT n1.nama_mk
+        FROM nilai n1
+        WHERE n1.nim = m.nim
+        ORDER BY n1.nilai_angka DESC
+        LIMIT 1
+    ) AS mata_kuliah_dengan_nilai_tertinggi
+FROM mahasiswa m
+JOIN nilai n ON m.nim = n.nim
+GROUP BY m.nim, m.nama;
+```
+
+## 2. SQL Query - Analisis Mata Kuliah
+
+Query berikut menampilkan data mata kuliah dengan jumlah mahasiswa yang mendapatkan nilai A atau B dan rata-rata nilai mahasiswa berumur 21 tahun:
+
+```sql
+SELECT
+    n.kode_mk,
+    n.nama_mk,
+    COUNT(CASE WHEN n.nilai_huruf IN ('A', 'B') THEN 1 END) AS jumlah_mahasiswa_nilai_A_B,
+    ROUND(
+        AVG(CASE WHEN m.umur > 20 AND m.umur < 22 THEN n.nilai_angka END), 2
+    ) AS rata_rata_mahasiswa_umur_21
+FROM nilai n
+JOIN mahasiswa m ON n.nim = m.nim
+GROUP BY n.kode_mk, n.nama_mk;
+```
 
 ## 3. Logika Pembagian Bola
 
----
+Untuk penjelasan logika pembagian bola, silakan lihat gambar pada file [nomor_3.png](nomor_3.png).
 
 ## 4. Struktur Database (ERD)
 
@@ -62,5 +99,3 @@ Berikut adalah entitas dan relasi dalam sistem **Point of Sale (POS) dan Invento
 5. **PRODUCT → CATEGORY** (_Many-to-One_): Setiap produk berada dalam satu kategori.
 6. **PRODUCT → SUPPLIER** (_Many-to-One_): Setiap produk memiliki satu pemasok.
 7. **PRODUCT → INVENTORY** (_One-to-One_): Setiap produk memiliki satu catatan inventori.
-
----
